@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mac 录制工具</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0071e3">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icons/icon-192.png">
+    <script src="https://cdn.jsdelivr.net/npm/ffmpeg.js@4.2.9001/ffmpeg-mp4.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Mac 录制工具</h1>
+        </header>
+
+        <main class="app-content">
+            <div class="tab-container">
+                <button class="tab-button active" data-tab="camera">摄像头录制</button>
+                <button class="tab-button" data-tab="screen">屏幕录制</button>
+                <button class="tab-button" data-tab="pip">画中画录制</button>
+            </div>
+
+            <div class="tab-content active" id="camera-tab">
+                <div class="recording-section">
+                    <div class="settings-panel">
+                        <div class="setting-group">
+                            <label>摄像头:</label>
+                            <select id="cameraSelect" class="setting-select"></select>
+                        </div>
+                        <div class="setting-group">
+                            <label>麦克风:</label>
+                            <select id="micSelect" class="setting-select"></select>
+                        </div>
+                        <div class="setting-group">
+                            <label>画质:</label>
+                            <select id="cameraQualitySelect" class="setting-select">
+                                <option value="1080p">1080p</option>
+                                <option value="720p" selected>720p</option>
+                                <option value="480p">480p</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>镜像:</label>
+                            <label class="switch">
+                                <input type="checkbox" id="mirrorToggle">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="setting-group">
+                            <label>保存格式:</label>
+                            <select id="formatSelect" class="setting-select">
+                                <option value="webm">WebM</option>
+                                <option value="mp4">MP4</option>
+                                <option value="gif">GIF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <video id="cameraPreview" autoplay muted></video>
+                    <div class="time-display">00:00</div>
+                    <div class="control-buttons">
+                        <button id="startCamera" class="primary-button">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/>
+                            </svg>
+                            ✨ 开始录制
+                        </button>
+                        <button id="stopCamera" class="danger-button" disabled>
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <rect x="6" y="6" width="12" height="12" fill="currentColor"/>
+                            </svg>
+                            停止录制
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="screen-tab">
+                <div class="recording-section">
+                    <div class="settings-panel">
+                        <div class="setting-group">
+                            <label>系统音频:</label>
+                            <select id="audioSelect" class="setting-select"></select>
+                        </div>
+                        <div class="setting-group">
+                            <label>画质:</label>
+                            <select id="screenQualitySelect" class="setting-select">
+                                <option value="4K">4K</option>
+                                <option value="1080p" selected>1080p</option>
+                                <option value="720p">720p</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>保存格式:</label>
+                            <select id="formatSelect" class="setting-select">
+                                <option value="webm">WebM</option>
+                                <option value="mp4">MP4</option>
+                                <option value="gif">GIF</option>
+                            </select>
+                        </div>
+                    </div>
+                    <video id="screenPreview" autoplay muted></video>
+                    <div class="time-display">00:00</div>
+                    <div class="control-buttons">
+                        <button id="startScreen" class="primary-button">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="8" fill="currentColor"/>
+                            </svg>
+                            开始录制
+                        </button>
+                        <button id="stopScreen" class="danger-button" disabled>
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <rect x="6" y="6" width="12" height="12" fill="currentColor"/>
+                            </svg>
+                            停止录制
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-content" id="pip-tab">
+                <div class="recording-section">
+                    <div class="settings-panel">
+                        <div class="setting-group">
+                            <label>摄像头:</label>
+                            <select id="pipCameraSelect" class="setting-select"></select>
+                        </div>
+                        <div class="setting-group">
+                            <label>麦克风:</label>
+                            <select id="pipMicSelect" class="setting-select"></select>
+                        </div>
+                        <div class="setting-group">
+                            <label>系统音频:</label>
+                            <select id="pipAudioSelect" class="setting-select"></select>
+                        </div>
+                        <div class="setting-group">
+                            <label>画质:</label>
+                            <select id="pipQualitySelect" class="setting-select">
+                                <option value="4K">4K</option>
+                                <option value="1080p" selected>1080p</option>
+                                <option value="720p">720p</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>摄像头大小:</label>
+                            <select id="pipSizeSelect" class="setting-select">
+                                <option value="small">小</option>
+                                <option value="medium" selected>中</option>
+                                <option value="large">大</option>
+                            </select>
+                        </div>
+                        <div class="setting-group">
+                            <label>保存格式:</label>
+                            <select id="pipFormatSelect" class="setting-select">
+                                <option value="webm">WebM</option>
+                                <option value="mp4">MP4</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="pip-container">
+                        <video id="pipScreenPreview" autoplay muted></video>
+                        <video id="pipCameraPreview" autoplay muted class="pip-camera"></video>
+                    </div>
+                    <div class="time-display">00:00</div>
+                    <div class="control-buttons">
+                        <button id="startPip" class="primary-button">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="8" fill="currentColor"/>
+                            </svg>
+                            开始录制
+                        </button>
+                        <button id="stopPip" class="danger-button" disabled>
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <rect x="6" y="6" width="12" height="12" fill="currentColor"/>
+                            </svg>
+                            停止录制
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recordings-container">
+                <h2>录制文件</h2>
+                <div id="recordingsList"></div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
